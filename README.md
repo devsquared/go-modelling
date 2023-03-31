@@ -1,4 +1,7 @@
-# go-modelling
+# godel
+Godel is pronounced like yodel. Or maybe like yah-del. Or, if you are a mathematician, like the greatest logician to 
+ever walk with Einstein.
+
 Simple and basic modelling in go. 
 
 ## Reasoning
