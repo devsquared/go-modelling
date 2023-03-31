@@ -1,5 +1,8 @@
 package godel
 
-import "fmt"
+import "errors"
 
-var ErrActionNotDefined = fmt.Errorf("action not defined")
+var (
+	ErrEventNotDefined = errors.New("event not defined")
+	ErrStateNotDefined = errors.New("state not defined")
+)
