@@ -7,6 +7,8 @@ import (
 	"github.com/devsquared/godel"
 )
 
+// TODO: refactor this to use new structure. This should show a better print structure to JSON.
+
 func main() {
 	fmt.Println("Welcome to godel!")
 
@@ -18,9 +20,9 @@ func main() {
 		Quantity int
 	}
 
-	manualRemovalAction := godel.Action{
-		Name:        "Manual Inventory Removal",
-		Desc:        "Action to remove an entry from the inventory - possible on all states",
+	manualRemovalAction := godel.Event{
+		Identifier:  "Manual Inventory Removal",
+		Desc:        "Event to remove an entry from the inventory - possible on all states",
 		ResultState: godel.State{},
 	}
 
@@ -31,11 +33,11 @@ func main() {
 			Status:   "received",
 			Quantity: 10,
 		},
-		Actions: []godel.Action{manualRemovalAction},
+		Actions: []godel.Event{manualRemovalAction},
 	}
 
-	edi944Action := godel.Action{
-		Name:        "EDI 944 received",
+	edi944Action := godel.Event{
+		Identifier:  "EDI 944 received",
 		Desc:        "We have received the EDI 944.",
 		ResultState: receivedStatusState,
 	}
@@ -47,7 +49,7 @@ func main() {
 			Status:   "expected",
 			Quantity: 10,
 		},
-		Actions: []godel.Action{edi944Action, manualRemovalAction},
+		Actions: []godel.Event{edi944Action, manualRemovalAction},
 	}
 
 	exampleMachine := godel.StateMachine{
@@ -62,8 +64,8 @@ func main() {
 	fmt.Println("Let's simulate receiving a 944.")
 	fmt.Println("We start in the initial state of " + exampleMachine.CurrentState.Name)
 	fmt.Println(fmt.Sprintf("In this state, we have the content of: %v", exampleMachine.CurrentState.Content))
-	fmt.Println("Upon the action of " + edi944Action.Name + ", the machine moves to the following state: ")
-	err := exampleMachine.ReceivedAction(edi944Action)
+	fmt.Println("Upon the action of " + edi944Action.Identifier + ", the machine moves to the following state: ")
+	err := exampleMachine.ReceivedEvent(edi944Action)
 	if err != nil {
 		fmt.Println(" unfortunately an INVALID STATE")
 		panic(err.Error())
@@ -79,7 +81,7 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("unable to marshal the machine: %w", err).Error())
 	}
-	
+
 	fmt.Println("For the simple example, we will output the data here rather than storing in file.")
 	fmt.Println(data)
 }

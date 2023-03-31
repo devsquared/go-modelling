@@ -4,19 +4,27 @@ import "fmt"
 
 // StateMachine defines a simple state machine.
 type StateMachine struct {
-	Name         string  `json:"name"`
-	Desc         string  `json:"desc"`
-	States       []State `json:"states"`
-	CurrentState State   `json:"currentState"`
+	Name         string `json:"name"`
+	Desc         string `json:"desc"`
+	States       States `json:"states"`
+	CurrentState State  `json:"currentState"`
 }
 
-// ReceivedAction kicks off the state machines processing of the action given.
-func (m *StateMachine) ReceivedAction(action Action) error {
-	resultState, err := m.CurrentState.ActedUponBy(action.Name)
-	if err != nil {
-		return fmt.Errorf("error processing action: %w", err)
+// ReceivedEvent kicks off the state machines processing of the event given.
+func (m *StateMachine) ReceivedEvent(event Event) error {
+	if event.Identifier == "" {
+		return ErrEventNotDefined
 	}
 
-	m.CurrentState = resultState
-	return nil
+	resultStateID, err := m.CurrentState.ActedUponBy(event.Identifier)
+	if err != nil {
+		return fmt.Errorf("error processing event: %w", err)
+	}
+
+	if resultState, ok := m.States[resultStateID]; ok {
+		m.CurrentState = resultState
+		return nil
+	}
+
+	return ErrStateNotDefined
 }
