@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/devsquared/godel"
@@ -69,4 +70,16 @@ func main() {
 	}
 	fmt.Println(exampleMachine.CurrentState.Name)
 	fmt.Println(fmt.Sprintf("In this state, we have the content of: %v", exampleMachine.CurrentState.Content))
+
+	fmt.Println("Now let's observe godel's ability to marshal our state machine to meaningful JSON: ")
+	fmt.Println("------------------------")
+	fmt.Println("Marshalling the example to output")
+
+	data, err := json.MarshalIndent(exampleMachine, "", " ")
+	if err != nil {
+		panic(fmt.Errorf("unable to marshal the machine: %w", err).Error())
+	}
+	
+	fmt.Println("For the simple example, we will output the data here rather than storing in file.")
+	fmt.Println(data)
 }
