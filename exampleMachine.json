@@ -1,0 +1,90 @@
+{
+ "name": "Simple receiving ASN State Machine",
+ "desc": "In this simple example, we receive an inbound shipment to see how that affects the expected quantity.",
+ "states": [
+  {
+   "name": "ASN Expected",
+   "desc": "We are expecting an ASN and the quantity shows us this in expected. This is typically the initial state.",
+   "content": {
+    "Status": "expected",
+    "Quantity": 10
+   },
+   "actions": [
+    {
+     "name": "EDI 944 received",
+     "desc": "We have received the EDI 944.",
+     "resultState": {
+      "name": "ASN received and counted",
+      "desc": "Inbound shipment received at our loading dock and has been counted and put away for waving.",
+      "content": {
+       "Status": "received",
+       "Quantity": 10
+      },
+      "actions": [
+       {
+        "name": "Manual Inventory Removal",
+        "desc": "Action to remove an entry from the inventory - possible on all states",
+        "resultState": {
+         "name": "",
+         "desc": "",
+         "content": null,
+         "actions": null
+        }
+       }
+      ]
+     }
+    },
+    {
+     "name": "Manual Inventory Removal",
+     "desc": "Action to remove an entry from the inventory - possible on all states",
+     "resultState": {
+      "name": "",
+      "desc": "",
+      "content": null,
+      "actions": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "ASN received and counted",
+   "desc": "Inbound shipment received at our loading dock and has been counted and put away for waving.",
+   "content": {
+    "Status": "received",
+    "Quantity": 10
+   },
+   "actions": [
+    {
+     "name": "Manual Inventory Removal",
+     "desc": "Action to remove an entry from the inventory - possible on all states",
+     "resultState": {
+      "name": "",
+      "desc": "",
+      "content": null,
+      "actions": null
+     }
+    }
+   ]
+  }
+ ],
+ "currentState": {
+  "name": "ASN received and counted",
+  "desc": "Inbound shipment received at our loading dock and has been counted and put away for waving.",
+  "content": {
+   "Status": "received",
+   "Quantity": 10
+  },
+  "actions": [
+   {
+    "name": "Manual Inventory Removal",
+    "desc": "Action to remove an entry from the inventory - possible on all states",
+    "resultState": {
+     "name": "",
+     "desc": "",
+     "content": null,
+     "actions": null
+    }
+   }
+  ]
+ }
+}
