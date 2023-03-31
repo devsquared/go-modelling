@@ -12,4 +12,8 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+ vendor/
+
+# local IDE related stuff
+.idea
+.DS_Store
