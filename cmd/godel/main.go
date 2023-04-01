@@ -7,8 +7,6 @@ import (
 	"github.com/devsquared/godel"
 )
 
-// TODO: refactor this to use new structure. This should show a better print structure to JSON.
-
 func main() {
 	fmt.Println("Welcome to godel!")
 
@@ -20,49 +18,60 @@ func main() {
 		Quantity int
 	}
 
-	manualRemovalAction := godel.Event{
+	manualRemovalEvent := godel.Event{
 		Identifier:  "Manual Inventory Removal",
 		Desc:        "Event to remove an entry from the inventory - possible on all states",
-		ResultState: godel.State{},
+		ResultState: "Removed",
 	}
 
+	receivedStatusKnownEvents := map[godel.EventIdentifier]godel.StateIdentifier{
+		manualRemovalEvent.Identifier: "Removed",
+	}
 	receivedStatusState := godel.State{
-		Name: "ASN received and counted",
-		Desc: "Inbound shipment received at our loading dock and has been counted and put away for waving.",
+		Identifier: "ASN received and counted",
+		Desc:       "Inbound shipment received at our loading dock and has been counted and put away for waving.",
 		Content: InventoryEntry{
 			Status:   "received",
 			Quantity: 10,
 		},
-		Actions: []godel.Event{manualRemovalAction},
+		Events: receivedStatusKnownEvents,
 	}
 
 	edi944Action := godel.Event{
 		Identifier:  "EDI 944 received",
 		Desc:        "We have received the EDI 944.",
-		ResultState: receivedStatusState,
+		ResultState: receivedStatusState.Identifier,
 	}
 
+	expectedStatusStateKnownEvents := map[godel.EventIdentifier]godel.StateIdentifier{
+		edi944Action.Identifier:       receivedStatusState.Identifier,
+		manualRemovalEvent.Identifier: "Removed",
+	}
 	expectedStatusState := godel.State{
-		Name: "ASN Expected",
-		Desc: "We are expecting an ASN and the quantity shows us this in expected. This is typically the initial state.",
+		Identifier: "ASN Expected",
+		Desc:       "We are expecting an ASN and the quantity shows us this in expected. This is typically the initial state.",
 		Content: InventoryEntry{
 			Status:   "expected",
 			Quantity: 10,
 		},
-		Actions: []godel.Event{edi944Action, manualRemovalAction},
+		Events: expectedStatusStateKnownEvents,
 	}
 
+	machineStates := map[godel.StateIdentifier]godel.State{
+		expectedStatusState.Identifier: expectedStatusState,
+		receivedStatusState.Identifier: receivedStatusState,
+	}
 	exampleMachine := godel.StateMachine{
 		Name:         "Simple receiving ASN State Machine",
 		Desc:         "In this simple example, we receive an inbound shipment to see how that affects the expected quantity.",
-		States:       []godel.State{expectedStatusState, receivedStatusState},
+		States:       machineStates,
 		CurrentState: expectedStatusState, // initial state is here
 	}
 
 	fmt.Println("We have an example State Machine called " + exampleMachine.Name)
 
 	fmt.Println("Let's simulate receiving a 944.")
-	fmt.Println("We start in the initial state of " + exampleMachine.CurrentState.Name)
+	fmt.Println("We start in the initial state of " + exampleMachine.CurrentState.Identifier)
 	fmt.Println(fmt.Sprintf("In this state, we have the content of: %v", exampleMachine.CurrentState.Content))
 	fmt.Println("Upon the action of " + edi944Action.Identifier + ", the machine moves to the following state: ")
 	err := exampleMachine.ReceivedEvent(edi944Action)
@@ -70,7 +79,7 @@ func main() {
 		fmt.Println(" unfortunately an INVALID STATE")
 		panic(err.Error())
 	}
-	fmt.Println(exampleMachine.CurrentState.Name)
+	fmt.Println(exampleMachine.CurrentState.Identifier)
 	fmt.Println(fmt.Sprintf("In this state, we have the content of: %v", exampleMachine.CurrentState.Content))
 
 	fmt.Println("Now let's observe godel's ability to marshal our state machine to meaningful JSON: ")
@@ -83,5 +92,5 @@ func main() {
 	}
 
 	fmt.Println("For the simple example, we will output the data here rather than storing in file.")
-	fmt.Println(data)
+	fmt.Println(string(data))
 }
