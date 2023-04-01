@@ -6,7 +6,7 @@ import "fmt"
 type StateMachine struct {
 	Name         string `json:"name"`
 	Desc         string `json:"desc"`
-	States       States `json:"states"`
+	States       States `json:"-"`
 	CurrentState State  `json:"currentState"`
 }
 
