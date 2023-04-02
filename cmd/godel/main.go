@@ -74,12 +74,12 @@ func main() {
 	fmt.Println("We start in the initial state of " + exampleMachine.CurrentState.Identifier)
 	fmt.Println(fmt.Sprintf("In this state, we have the content of: %v", exampleMachine.CurrentState.Content))
 	fmt.Println("Upon the action of " + edi944Action.Identifier + ", the machine moves to the following state: ")
-	err := exampleMachine.ReceivedEvent(edi944Action)
+	newStateID, err := exampleMachine.ReceivedEvent(edi944Action.Identifier)
 	if err != nil {
 		fmt.Println(" unfortunately an INVALID STATE")
 		panic(err.Error())
 	}
-	fmt.Println(exampleMachine.CurrentState.Identifier)
+	fmt.Println(newStateID)
 	fmt.Println(fmt.Sprintf("In this state, we have the content of: %v", exampleMachine.CurrentState.Content))
 
 	fmt.Println("Now let's observe godel's ability to marshal our state machine to meaningful JSON: ")

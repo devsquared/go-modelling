@@ -2,7 +2,7 @@ package godel
 
 import "fmt"
 
-// TODO: Let's create some custom marshalling so that we can print how we want here.
+// TODO: Need to create a good builder pattern here so that creating machine with well-defined states and events is easy and intuitive
 
 // StateMachine defines a simple state machine.
 type StateMachine struct {
@@ -13,20 +13,21 @@ type StateMachine struct {
 }
 
 // ReceivedEvent kicks off the state machines processing of the event given.
-func (m *StateMachine) ReceivedEvent(event Event) error {
-	if event.Identifier == "" {
-		return ErrEventNotDefined
+func (m *StateMachine) ReceivedEvent(eventID EventIdentifier) (StateIdentifier, error) {
+	var NilStateID StateIdentifier
+	if eventID == "" {
+		return NilStateID, ErrEventNotDefined
 	}
 
-	resultStateID, err := m.CurrentState.ActedUponBy(event.Identifier)
+	resultStateID, err := m.CurrentState.ActedUponBy(eventID)
 	if err != nil {
-		return fmt.Errorf("error processing event: %w", err)
+		return NilStateID, fmt.Errorf("error processing event: %w", err)
 	}
 
 	if resultState, ok := m.States[resultStateID]; ok {
 		m.CurrentState = resultState
-		return nil
+		return m.CurrentState.Identifier, nil
 	}
 
-	return ErrStateNotDefined
+	return NilStateID, ErrStateNotDefined
 }
