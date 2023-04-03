@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/devsquared/godel"
+	"github.com/devsquared/godel/model"
 )
 
 func main() {
@@ -93,4 +95,30 @@ func main() {
 
 	fmt.Println("For the simple example, we will output the data here rather than storing in file.")
 	fmt.Println(string(data))
+
+	// Right Arrow
+	if err = model.DrawArrow(os.Stdout, model.Right, 30, string(exampleMachine.CurrentState.Identifier)); err != nil {
+		panic("drawing sucks")
+	}
+
+	fmt.Println()
+
+	// Left Arrow
+	if err = model.DrawArrow(os.Stdout, model.Left, 30, string(exampleMachine.CurrentState.Identifier)); err != nil {
+		panic("drawing sucks")
+	}
+
+	fmt.Println()
+
+	// Up Arrow
+	if err = model.DrawArrow(os.Stdout, model.Up, 20, string(exampleMachine.CurrentState.Identifier)); err != nil {
+		panic("drawing sucks")
+	}
+
+	fmt.Println()
+
+	// Down Arrow
+	if err = model.DrawArrow(os.Stdout, model.Down, 20, string(exampleMachine.CurrentState.Identifier)); err != nil {
+		panic("drawing sucks")
+	}
 }

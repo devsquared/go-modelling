@@ -15,5 +15,6 @@ than doing it yourself.
 - [x] Make sure we can marshal and unmarshal JSON effectively
   - [x] How can we clean this up? Are all actions and states needed? Better way to display?
 - [ ] Explore some kind of simple graphical output
-  - [ ] Output to markdown with a simple model and description would be very helpful
+  - [ ] Start with arrows, then nodes, and then the whole model
+    - [ ] Output to markdown with a simple model and description would be very helpful
 - [ ] Could we explore annotating go code to read and produce a state machine model?
