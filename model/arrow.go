@@ -25,15 +25,11 @@ const (
 )
 
 const (
-	DownArrow      = "V"
-	HorizontalLine = "-"
-	LabelMark      = "+"
-	LeftArrow      = "<"
-	NewLine        = "\n"
-	RightArrow     = ">"
-	Space          = " "
-	UpArrow        = "^"
-	VerticalLine   = "|"
+	DownArrow  = "V"
+	LabelMark  = "+"
+	LeftArrow  = "<"
+	RightArrow = ">"
+	UpArrow    = "^"
 )
 
 // TODO: start with the base 4 (check!) and then expand
