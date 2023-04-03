@@ -21,4 +21,8 @@ package model
 //          |   "Status": "received"   |		   						   | "Status": "lost"  |
 //          +--------------------------+		  						   +-------------------+
 
+// Conceptualizing the drawing space as a grid is probably going to make this the easiest.
+
+// Let's make the max page width 120 characters.
+
 // Model defines the graphical output for a whole model.
