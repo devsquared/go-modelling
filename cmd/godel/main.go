@@ -121,4 +121,11 @@ func main() {
 	if err = model.DrawArrow(os.Stdout, model.Down, 20, string(exampleMachine.CurrentState.Identifier)); err != nil {
 		panic("drawing sucks")
 	}
+
+	fmt.Println()
+
+	// State Node
+	if err = model.DrawStateNode(os.Stdout, string(exampleMachine.CurrentState.Identifier), "Status: received"); err != nil {
+		panic("drawing sucks")
+	}
 }

@@ -1,5 +1,6 @@
 package model
 
+// Model defines the graphical output for a whole model.
 // To help visualize what we are building, take the simple example from the project:
 //
 //								+------------------------------------+
@@ -12,7 +13,7 @@ package model
 //			| "Status": "expected" |							 					 |
 //			+----------+-----------+											     |
 //					   |								         					 |
-//				       +- EDI 944 received											 |
+//				       + EDI 944 received											 |
 //					   |															 |
 //                     V															 V
 //          +--------------------------+		   						   +-------------------+
@@ -23,6 +24,12 @@ package model
 
 // Conceptualizing the drawing space as a grid is probably going to make this the easiest.
 
-// Let's make the max page width 120 characters.
+const maxModelWidth = 120
 
-// Model defines the graphical output for a whole model.
+const (
+	Corner         = "+"
+	HorizontalLine = "-"
+	NewLine        = "\n"
+	Space          = " "
+	VerticalLine   = "|"
+)
