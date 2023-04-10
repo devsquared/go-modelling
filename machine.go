@@ -4,30 +4,26 @@ import "fmt"
 
 // TODO: Need to create a good builder pattern here so that creating machine with well-defined states and events is easy and intuitive
 
-// StateMachine defines a simple state machine.
+// StateMachine defines a simple state machine instance.
 type StateMachine struct {
-	Name         string `json:"Name"`
-	Desc         string `json:"Desc"`
-	States       States `json:"States"`
-	CurrentState State  `json:"-"`
+	Name         string       `json:"Name"`
+	Desc         string       `json:"Desc"`
+	States       States       `json:"States"`
+	CurrentState MachineState `json:"-"`
 }
 
-// ReceivedEvent kicks off the state machines processing of the event given.
-func (m *StateMachine) ReceivedEvent(eventID EventIdentifier) (StateIdentifier, error) {
-	var NilStateID StateIdentifier
-	if eventID == "" {
-		return NilStateID, ErrEventNotDefined
-	}
-
-	resultStateID, err := m.CurrentState.ActedUponBy(eventID)
+func (m *StateMachine) SendEvent(event Event) error {
+	newStateID, err := m.CurrentState.OnEvent(event)
 	if err != nil {
-		return NilStateID, fmt.Errorf("error processing event: %w", err)
+		return fmt.Errorf("failed responding to event: %w", err)
 	}
 
-	if resultState, ok := m.States[resultStateID]; ok {
-		m.CurrentState = resultState
-		return m.CurrentState.Identifier, nil
+	if newState, exists := m.States[newStateID]; exists {
+		m.CurrentState = newState
+		return nil
+	} else {
+		return ErrStateNotDefined
 	}
-
-	return NilStateID, ErrStateNotDefined
 }
+
+// Need a way to execute many, many instances of a machine to test the specifications.
