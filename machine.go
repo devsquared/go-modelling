@@ -2,7 +2,7 @@ package godel
 
 import "fmt"
 
-// Need a way to execute many, many instances of a machine to test the specifications.
+// TODO: Need a way to execute many, many instances of a machine to test the specifications.
 
 // StateMachine defines a simple state machine instance.
 type StateMachine struct {
