@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/devsquared/godel"
+	"os"
 )
 
 type LightPower string
@@ -12,20 +14,20 @@ const LightOff LightPower = "off"
 
 // LightOnState is a basic example of a struct implementing the State interface.
 type LightOnState struct {
-	name        string
-	identifier  godel.StateIdentifier
-	desc        string
-	knownEvents godel.Events
-	content     LightPower
+	Name        string                `json:"Name"`
+	Identifier  godel.StateIdentifier `json:"-"`
+	Desc        string                `json:"Desc"`
+	KnownEvents godel.Events          `json:"KnownEvents"`
+	Content     LightPower            `json:"Content"`
 }
 
 // LightOffState is another basic example.
 type LightOffState struct {
-	name        string
-	identifier  godel.StateIdentifier
-	desc        string
-	knownEvents godel.Events
-	content     LightPower
+	Name        string                `json:"Name"`
+	Identifier  godel.StateIdentifier `json:"-"`
+	Desc        string                `json:"Desc"`
+	KnownEvents godel.Events          `json:"KnownEvents"`
+	Content     LightPower            `json:"Content"`
 }
 
 // OnEvent deals with the event that comes into the machine and affects the state. As events are known, add a handler here.
@@ -33,7 +35,7 @@ func (s *LightOnState) OnEvent(event godel.Event) (godel.StateIdentifier, error)
 	fmt.Println("received " + event.Identifier + " event")
 
 	// check knownEvents for the event needed
-	if resultState, exists := s.knownEvents[event.Identifier]; exists {
+	if resultState, exists := s.KnownEvents[event.Identifier]; exists {
 		return resultState, nil
 	} else {
 		return "", godel.ErrEventNotDefined
@@ -48,7 +50,7 @@ func (s *LightOffState) OnEvent(event godel.Event) (godel.StateIdentifier, error
 	fmt.Println("received " + event.Identifier + " event")
 
 	// check knownEvents for the event needed
-	if resultState, exists := s.knownEvents[event.Identifier]; exists {
+	if resultState, exists := s.KnownEvents[event.Identifier]; exists {
 		return resultState, nil
 	} else {
 		return "", godel.ErrEventNotDefined
@@ -65,21 +67,21 @@ func main() {
 	}
 
 	lightOnState := LightOnState{
-		name:       "light is on state",
-		identifier: "lightOn",
-		knownEvents: map[godel.EventIdentifier]godel.StateIdentifier{
+		Name:       "light is on state",
+		Identifier: "lightOn",
+		KnownEvents: map[godel.EventIdentifier]godel.StateIdentifier{
 			switchFlipEvent.Identifier: "lightOff",
 		},
-		content: LightOn,
+		Content: LightOn,
 	}
 
 	lightOffState := LightOffState{
-		name:       "light is off state",
-		identifier: "lightOff",
-		knownEvents: map[godel.EventIdentifier]godel.StateIdentifier{
+		Name:       "light is off state",
+		Identifier: "lightOff",
+		KnownEvents: map[godel.EventIdentifier]godel.StateIdentifier{
 			switchFlipEvent.Identifier: "lightOn",
 		},
-		content: LightOff,
+		Content: LightOff,
 	}
 
 	exampleLightSwitchMachine := godel.NewStateMachineBuilder("Simple Light Switch State Machine", &lightOffState).
@@ -95,4 +97,10 @@ func main() {
 	}
 
 	fmt.Println("Have ended up in this state: " + exampleLightSwitchMachine.CurrentState.Identify())
+
+	fmt.Println("Let's marshal to JSON to conveniently see the machine.")
+
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetIndent("", "    ")
+	encoder.Encode(&exampleLightSwitchMachine)
 }
